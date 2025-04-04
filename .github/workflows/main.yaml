@@ -1,0 +1,104 @@
+---
+name: Deploy to Github Pages
+
+# Will trigger the workflow on each push to the main branch
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .github/workflows/update-submodule.yaml
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: 👕 Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false # No linting for submodules
+          fetch-depth: 1
+      - name: Markddown
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: "content/**/*.md"
+      - name: CSS
+        uses: actions-hub/stylelint@master
+        env:
+          PATTERN: "static/css/custom.css"
+
+  build:
+    name: 🔧 Build Hugo site
+    runs-on: ubuntu-latest
+    env:
+      HUGO_CACHEDIR: /tmp/hugo_cache
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 0.143.1
+          extended: true
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.HUGO_CACHEDIR }}
+          key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-hugomod-
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build with Hugo
+        env:
+          # For maximum backward compatibility with Hugo modules
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+          TZ: Europe/Berlin
+        run: |
+          hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+
+  deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs:
+      - build
+      - lint
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: update deployment status
+        uses: bobheadxi/deployments@v1
+        id: deployment_status
+        with:
+          env: prod
+          step: start
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          status: ${{ steps.deployment.outputs.page_url }}
+          env: ${{ steps.deployment_status.outputs.env }}
+          env_url: https://mv-strassdorf.de
+          deployment_id: ${{ steps.deployment_status.outputs.deployment_id }}
