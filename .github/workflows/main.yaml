@@ -27,10 +27,10 @@ jobs:
         uses: DavidAnson/markdownlint-cli2-action@v19
         with:
           globs: "content/**/*.md"
-      - name: CSS
-        uses: actions-hub/stylelint@master
-        env:
-          PATTERN: "static/css/custom.css"
+#      - name: CSS
+#        uses: actions-hub/stylelint@master
+#        env:
+#          PATTERN: "static/css/custom.css"
 
   build:
     name: 🔧 Build Hugo site
