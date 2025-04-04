@@ -1,0 +1,58 @@
+baseURL: https://example.org/
+languageCode: en-us
+title: My New Hugo Site
+theme: hugo-profile
+
+
+params:
+  navbar:
+    disableSearch: true
+  hero:
+    enable: true
+    intro: "Hi, my name is"
+    title: "Johannes."
+    subtitle: "I craft solid systems"
+    content: |-
+      A passionate software engineer with a love for clean code, sustainable software architecture, and smart home
+      technology.
+      I design and lead the development of scalable systems, build BLE-based tools, and automate everything I can — at
+      work and at home.
+    image: '/images/jd.jpg'
+    socialLinks:
+      fontAwesomeIcons:
+        - icon: fab fa-github
+          url: https://github.com/jd1
+        - icon: fab fa-linkedin
+          url: https://www.linkedin.com/in/johannes-dilli/
+        - icon: fab fa-mastodon
+          url: https://chaos.social/@jd
+  about:
+    enable: true
+    title: "About Me"
+    image: '/images/jd.jpg'
+    content: |-
+      I'm a backend engineer with a passion for building robust, scalable systems and improving code quality across
+      teams.
+      My professional focus lies in cloud-native development, microservices, BLE tooling, and clean software
+      architecture.  
+      I enjoy mentoring, leading teams, and driving knowledge sharing through formats like exchange sessions and 
+      Pair/Mob Programming workshops.  
+      In my free time, I love experimenting with smart home automation and integrating various systems to make everyday
+      life a bit more clever.
+
+      I'm currently working as a software engineer at [CGI](https://cgi.com), helping teams deliver reliable software
+      with purpose and precision.
+    skills:
+      enable: true
+      title: "Here are a few technologies I've been working with recently:"
+      items:
+        - "Java"
+        - "Kotlin"
+        - "Spring Boot"
+        - "Quarkus"
+        - "Docker & Kubernetes"
+        - "Kafka"
+        - "Terraform"
+        - "GitHub Actions"
+        - "BLE (Bluetooth Low Energy)"
+        - "Smart Home (in my free time)"

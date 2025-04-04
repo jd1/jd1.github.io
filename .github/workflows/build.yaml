@@ -1,0 +1,62 @@
+---
+name: Build website
+
+on:
+  workflow_call:
+    inputs:
+      domain:
+        description: The domain which should be used in links
+        required: true
+        type: string
+      hugo-version:
+        required: false
+        default: 0.143.1
+        type: string
+      artifact:
+        description: The name of the artifact which is uploaded
+        required: true
+        type: string
+      retention-days:
+        description: Duration after which artifact will expire in days. 0 means using default retention.
+        required: false
+        default: 5
+        type: number
+
+jobs:
+  build:
+    name: 🔧 Build Hugo site
+    runs-on: ubuntu-latest
+    env:
+      HUGO_CACHEDIR: /tmp/hugo_cache
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: ${{ inputs.hugo-version }}
+        extended: true
+    - uses: actions/cache@v4
+      with:
+        path: ${{ env.HUGO_CACHEDIR }}
+        key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-hugomod-
+    - name: Build with Hugo
+      env:
+        # For maximum backward compatibility with Hugo modules
+        HUGO_ENVIRONMENT: production
+        HUGO_ENV: production
+        TZ: Europe/Berlin
+      run: |
+        hugo \
+          --gc \
+          --minify \
+          -b ${{ inputs.domain }}
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./public

@@ -1,0 +1,47 @@
+---
+name: 🔄 Update submodules
+on:
+  schedule:
+    - cron: "0 2 * * *" # daily at 02:00 AM UTC
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/update-submodule.yaml
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Update submodules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Update submodules
+        run: git submodule update --remote
+      - name: Get diff
+        uses: GrantBirki/git-diff-action@v2.8.0
+        id: git-diff-action
+        with:
+          search_path: ./themes
+          file_output_only: true
+      - name: 🤝 Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update submodules"
+          branch: update-submodules
+          delete-branch: true
+          title: "[Chore] Update submodules"
+          body: ${{ steps.git-diff-action.outputs.raw-diff }}
+          labels: |
+            chore
