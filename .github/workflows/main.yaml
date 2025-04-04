@@ -100,7 +100,7 @@ jobs:
         if: always()
         with:
           step: finish
-          status: ${{ steps.deployment.outputs.page_url }}
+          status: ${{ job.status }}
           env: ${{ steps.deployment_status.outputs.env }}
-          env_url: https://mv-strassdorf.de
+          env_url: ${{ steps.deployment.outputs.page_url }}
           deployment_id: ${{ steps.deployment_status.outputs.deployment_id }}
