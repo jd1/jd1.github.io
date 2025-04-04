@@ -90,7 +90,7 @@ jobs:
         uses: bobheadxi/deployments@v1
         id: deployment_status
         with:
-          env: prod
+          env: github-pages
           step: start
       - name: Deploy to GitHub Pages
         id: deployment
