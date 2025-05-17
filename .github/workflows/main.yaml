@@ -24,7 +24,7 @@ jobs:
           submodules: false # No linting for submodules
           fetch-depth: 1
       - name: Markddown
-        uses: DavidAnson/markdownlint-cli2-action@v19
+        uses: DavidAnson/markdownlint-cli2-action@v20
         with:
           globs: "content/**/*.md"
 #      - name: CSS
