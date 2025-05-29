@@ -29,7 +29,7 @@ jobs:
       - name: Update submodules
         run: git submodule update --remote
       - name: Get diff
-        uses: GrantBirki/git-diff-action@v2.8.0
+        uses: GrantBirki/git-diff-action@v2.8.1
         id: git-diff-action
         with:
           search_path: ./themes
