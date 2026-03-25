@@ -94,7 +94,7 @@ jobs:
           step: start
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
       - name: Update deployment status
         uses: bobheadxi/deployments@v1
         if: always()
